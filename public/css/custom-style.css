@@ -1,0 +1,52 @@
+body{
+  font-family: 'Roboto', sans-serif !important;
+}
+.router-link-exact-active{
+  background-color: #eb9c01;
+  color: black !important;
+}
+
+.router-link-active{
+  background-color: #eb9c01 !important;
+  color: black !important;
+}
+
+.brand-link{
+  background-color: transparent;
+  color: white !important;
+}
+
+.main-sidebar{
+  background-color: #343a40;
+}
+
+table{
+  // text-align: center;
+  vertical-align: middle;
+  border: none!important;
+}
+
+.card-body{
+  padding: 0px;
+}
+
+.content{
+  padding: 5px !important;
+}
+
+.container-fluid{
+  // padding: 0px !important;
+}
+
+.col-md-12{
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.col-sm-12{
+  padding-right: 0px !important;
+}
+
+.hidden_select{
+  display: none;
+}
