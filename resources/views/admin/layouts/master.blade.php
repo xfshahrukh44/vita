@@ -122,6 +122,12 @@
                   <p>Customer Types</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{route('payment_method.index')}}" class="nav-link">
+                  <i class="nav-icon fas fa-users"></i>
+                  <p>Payment Methods</p>
+                </a>
+              </li>
               @can('isSuperAdmin')
                 <li class="nav-item">
                   <a href="{{route('vendor.index')}}" class="nav-link">

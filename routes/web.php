@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function() {
     Route::apiResources(['hub'=>'Admin\HubController']);
     Route::apiResources(['discount'=>'Admin\DiscountController']);
     Route::apiResources(['customer_type'=>'Admin\CustomerTypeController']);
+    Route::apiResources(['payment_method'=>'Admin\PaymentMethodController']);
     // --------------------------------------------------------------
 
     // SEARCH ROUTES--------------------------------------------------------------------------------------------
