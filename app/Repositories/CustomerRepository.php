@@ -118,7 +118,7 @@ abstract class CustomerRepository implements RepositoryInterface
     public function paginate($pagination)
     {
         try {
-            return $this->model::orderBy('created_at', 'DESC')->paginate($pagination);
+            return $this->model::orderBy('name', 'ASC')->paginate($pagination);
         }
         catch (\Exception $exception) {
             throw new AllUserException($exception->getMessage());
