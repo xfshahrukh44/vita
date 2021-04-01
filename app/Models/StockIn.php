@@ -39,32 +39,18 @@ class StockIn extends Model
             // update vendor ledger
             $ledger = Ledger::where('vendor_id', $query->vendor_id)
                             ->where('amount', $query->amount)
+                            ->where('type', 'credit')
                             ->first();
             if($ledger){
                 $ledger->delete();
             }
 
             // new
+            $product->purchase_price = ($product->cost_value - $old_amount + $new_amount) / ( $product->quantity_in_hand - $old_quantity + $new_quantity);
+            
             // update product quantity in hand
             $product->quantity_in_hand += $new_quantity;
-            // ---------------------------------------------------------------
-            // update product purchase price
-            $stockIns = StockIn::where('product_id', $query->product_id)->get();
-            $amount = 0;
-            $quantity = 0;
-            foreach($stockIns as $stockIn){
-                $amount += $stockIn->amount;
-                $quantity += $stockIn->quantity;
-            }
-            // decrement current amount and rate
-            $amount -= $old_amount;
-            $quantity -= $old_quantity;
-            // increment new amount and rate
-            $amount += $new_amount;
-            $quantity += $new_quantity;
-            // calculate avg purchase price
-            $purchase_price = $amount / $quantity;
-            $product->purchase_price = $purchase_price;
+            
             // cost and sales value
             $product->cost_value = $product->quantity_in_hand * $product->purchase_price;
             $product->sales_value = $product->quantity_in_hand * $product->consumer_selling_price;
@@ -77,27 +63,14 @@ class StockIn extends Model
                 'transaction_date' => return_todays_date()
             ]);
 
-            $product->save();
+            $product->saveQuietly();
         });
 
         static::deleting(function ($query) {
             // find product
             $product = Product::find($query->product_id);
 
-            // update product purchase price
-            $stockIns = StockIn::where('product_id', $query->product_id)->get();
-            $amount = 0;
-            $quantity = 0;
-            foreach($stockIns as $stockIn){
-                $amount += $stockIn->amount;
-                $quantity += $stockIn->quantity;
-            }
-            // decrement current amount and rate
-            $amount -= $query->amount;
-            $quantity -= $query->quantity;
-
-            $purchase_price = $amount / $quantity;
-            $product->purchase_price = $purchase_price;
+            $product->purchase_price = ($product->cost_value - $query->amount) / ( $product->quantity_in_hand - $query->quantity);
 
             // update product quantity in hand
             $product->quantity_in_hand -= $query->quantity;
@@ -105,11 +78,12 @@ class StockIn extends Model
             // cost and sales value
             $product->cost_value = $product->quantity_in_hand * $product->purchase_price;
             $product->sales_value = $product->quantity_in_hand * $product->consumer_selling_price;
-            $product->save();
+            $product->saveQuietly();
 
             // update vendor ledger
             $ledger = Ledger::where('vendor_id', $query->vendor_id)
                             ->where('amount', $query->amount)
+                            ->where('type', 'credit')
                             ->first();
             if($ledger){
                 $ledger->delete();
@@ -120,16 +94,7 @@ class StockIn extends Model
             // find product
             $product = Product::find($query->product_id);
 
-            // update product purchase price
-            $stockIns = StockIn::where('product_id', $query->product_id)->get();
-            $amount = 0;
-            $quantity = 0;
-            foreach($stockIns as $stockIn){
-                $amount += $stockIn->amount;
-                $quantity += $stockIn->quantity;
-            }
-            $purchase_price = $amount / $quantity;
-            $product->purchase_price = $purchase_price;
+            $product->purchase_price = ($product->cost_value + $query->amount) / ( $product->quantity_in_hand + $query->quantity);
             
             // update product quantity in hand
             $product->quantity_in_hand += $query->quantity;
@@ -137,11 +102,11 @@ class StockIn extends Model
             // cost and sales value
             $product->cost_value = $product->quantity_in_hand * $product->purchase_price;
             $product->sales_value = $product->quantity_in_hand * $product->consumer_selling_price;
-            $product->save();
+            $product->saveQuietly();
 
             // update vendor ledger
             Ledger::create([
-                'vendor_id' => $query->vendor_id,
+                'vendor_id' => (($query->vendor_id) ? ($query->vendor_id) : NULL),
                 'customer_id' => 0,
                 'amount' => $query->amount,
                 'type' => 'credit',

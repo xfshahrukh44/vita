@@ -10,7 +10,7 @@ class Channel extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'created_by', 'modified_by'
+        'name', 'abb', 'created_by', 'modified_by'
     ];
 
     protected static function boot()

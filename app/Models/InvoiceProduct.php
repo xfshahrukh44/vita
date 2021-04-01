@@ -17,6 +17,9 @@ class InvoiceProduct extends Model
         'product_id',
         'quantity',
         'price',
+        'foc',
+        'discount',
+        'gross_amount',
         'created_by',
         'modified_by'
     ];
@@ -34,7 +37,9 @@ class InvoiceProduct extends Model
         });
 
         static::deleting(function ($query) {
-            $stock_out = StockOut::where('customer_id', $query->customer_id)
+            $invoice = Invoice::find($query->invoice_id);
+            $customer_id = $invoice->customer_id;
+            $stock_out = StockOut::where('customer_id', $customer_id)
                                 ->where('product_id', $query->product_id)
                                 ->where('quantity', $query->quantity)
                                 ->where('price', $query->price)
@@ -68,5 +73,10 @@ class InvoiceProduct extends Model
     public function product()
     {
         return $this->belongsTo('App\Models\Product');
+    }
+
+    public function discount()
+    {
+        return $this->hasOne('App\Models\Discount');
     }
 }

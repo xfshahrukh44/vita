@@ -16,6 +16,8 @@ class Customer extends Model
         'market_id',
         'channel_id',
         'hub_id',
+        'customer_type_id',
+        'payment_method_id',
         'business_to_date',
         'outstanding_balance',
         'contact_number',
@@ -96,6 +98,15 @@ class Customer extends Model
     public function hub()
     {
         return $this->belongsTo('App\Models\Hub');
+    }
+
+    public function customer_type()
+    {
+        return $this->belongsTo('App\Models\CustomerType');
+    }
+    public function payment_method()
+    {
+        return $this->belongsTo('App\Models\PaymentMethod');
     }
 
     public function orders()

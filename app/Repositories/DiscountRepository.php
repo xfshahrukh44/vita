@@ -2,29 +2,29 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\Category\AllCategoryException;
-use App\Exceptions\Category\CreateCategoryException;
-use App\Exceptions\Category\UpdateCategoryException;
-use App\Exceptions\Category\DeleteCategoryException;
-use App\Models\Category;
+use App\Exceptions\Discount\AllDiscountException;
+use App\Exceptions\Discount\CreateDiscountException;
+use App\Exceptions\Discount\UpdateDiscountException;
+use App\Exceptions\Discount\DeleteDiscountException;
+use App\Models\Discount;
 
-abstract class CategoryRepository implements RepositoryInterface
+abstract class DiscountRepository implements RepositoryInterface
 {
     private $model;
     
-    public function __construct(Category $category)
+    public function __construct(Discount $discount)
     {
-        $this->model = $category;
+        $this->model = $discount;
     }
     
     public function create(array $data)
     {
         try 
         {    
-            $category = $this->model->create($data);
+            $discount = $this->model->create($data);
             
             return [
-                'category' => $this->find($category->id)
+                'discount' => $this->find($discount->id)
             ];
         }
         catch (\Exception $exception) {
@@ -39,7 +39,7 @@ abstract class CategoryRepository implements RepositoryInterface
             {
                 return [
                     'success' => false,
-                    'message' => 'Could`nt find category',
+                    'message' => 'Could`nt find discount',
                 ];
             }
 
@@ -48,11 +48,11 @@ abstract class CategoryRepository implements RepositoryInterface
             return [
                 'success' => true,
                 'message' => 'Deleted successfully',
-                'deletedCategory' => $temp,
+                'discount' => $temp,
             ];
         }
         catch (\Exception $exception) {
-            throw new DeleteCategoryException($exception->getMessage());
+            throw new DeleteDiscountException($exception->getMessage());
         }
     }
     
@@ -63,7 +63,7 @@ abstract class CategoryRepository implements RepositoryInterface
             {
                 return [
                     'success' => false,
-                    'message' => 'Could`nt find category',
+                    'message' => 'Could`nt find discount',
                 ];
             }
 
@@ -73,11 +73,11 @@ abstract class CategoryRepository implements RepositoryInterface
             return [
                 'success' => true,
                 'message' => 'Updated successfully!',
-                'updated_category' => $this->find($temp->id),
+                'discount' => $this->find($temp->id),
             ];
         }
         catch (\Exception $exception) {
-            throw new UpdateCategoryException($exception->getMessage());
+            throw new UpdateDiscountException($exception->getMessage());
         }
     }
     
@@ -85,17 +85,17 @@ abstract class CategoryRepository implements RepositoryInterface
     {
         try 
         {
-            $category = $this->model::with('products', 'children')->find($id);
-            if(!$category)
+            $discount = $this->model::find($id);
+            if(!$discount)
             {
                 return [
                     'success' => false,
-                    'message' => 'Could`nt find category',
+                    'message' => 'Could`nt find discount',
                 ];
             }
             return [
                 'success' => true,
-                'category' => $category,
+                'discount' => $discount,
             ];
         }
         catch (\Exception $exception) {
@@ -106,20 +106,20 @@ abstract class CategoryRepository implements RepositoryInterface
     public function all()
     {
         try {
-            return $this->model::with('products')->get();
+            return $this->model::all();
         }
         catch (\Exception $exception) {
-            throw new AllCategoryException($exception->getMessage());
+            throw new AllDiscountException($exception->getMessage());
         }
     }
-    
+
     public function paginate($pagination)
     {
         try {
             return $this->model::orderBy('created_at', 'DESC')->paginate($pagination);
         }
         catch (\Exception $exception) {
-            throw new AllCategoryException($exception->getMessage());
+            throw new AllDiscountException($exception->getMessage());
         }
     }
 }

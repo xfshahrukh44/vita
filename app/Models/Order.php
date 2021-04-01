@@ -46,6 +46,13 @@ class Order extends Model
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
+    public function saveQuietly(array $options = [])
+    {
+        return static::withoutEvents(function () use ($options) {
+            return $this->save($options);
+        });
+    }
+
     public function customer()
     {
         return $this->belongsTo('App\Models\Customer');

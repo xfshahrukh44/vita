@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddChannelIdToCustomers extends Migration
+class CreateCustomerTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class AddChannelIdToCustomers extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->integer('channel_id')->nullable();
-            $table->integer('hub_id')->nullable();
+        Schema::create('customer_types', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->nullable();
+            $table->timestamps();
+            $table->softDeletes()->nullable();
         });
     }
 
@@ -26,8 +28,6 @@ class AddChannelIdToCustomers extends Migration
      */
     public function down()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('customer_types');
     }
 }

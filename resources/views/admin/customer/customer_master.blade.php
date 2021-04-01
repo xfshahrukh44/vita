@@ -18,11 +18,11 @@
     <!-- type -->
     <div class="form-group col-md-2  col-sm-2">
         <label for="">Customer Type</label>
-        <select name="type" class="form-control type" style="width: 100%; height: 35px;">
+        <select name="customer_type" class="form-control customer_type" style="width: 100%; height: 35px;">
             <option value="">Select Customer Type</option>
-            <option value="consumer">Consumer</option>
-            <option value="retailer">Retailer</option>
-            <option value="distributor">Distributor</option>
+            @foreach($customer_types as $customer_type)
+                <option value="{{$customer_type->id}}">{{$customer_type->name}}</option>
+            @endforeach
         </select>
     </div>
     <!-- shop_keeper_picture -->
@@ -118,6 +118,16 @@
             <option value="weekly">Weekly</option>
             <option value="after_15_days">After 15 Days</option>
             <option value="50%_on_delivery">50% on Delivery</option>
+        </select>
+    </div>
+    <!-- type -->
+    <div class="form-group col-md-2  col-sm-2">
+        <label for="">Payment Method</label>
+        <select name="payment_method" class="form-control payment_method" style="width: 100%; height: 35px;">
+            <option value="">Select Payment Method</option>
+            @foreach($payment_methods as $payment_method)
+                <option value="{{$payment_method->id}}">{{$payment_method->name}}</option>
+            @endforeach
         </select>
     </div>
     <!-- opening_balance -->

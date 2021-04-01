@@ -11,6 +11,8 @@ use App\Services\ChannelService;
 use App\Services\HubService;
 use App\Services\ProductService;
 use App\Services\SpecialDiscountService;
+use App\Models\CustomerType;
+use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -46,7 +48,9 @@ class CustomerController extends Controller
         $channels = $this->channelService->all();
         $hubs = $this->hubService->all();
         $products = $this->productService->all();
-        return view('admin.customer.customer', compact('customers', 'areas', 'markets', 'channels', 'hubs', 'products'));
+        $customer_types = CustomerType::all();
+        $payment_methods = PaymentMethod::all();
+        return view('admin.customer.customer', compact('customers', 'areas', 'markets', 'channels', 'hubs', 'products', 'customer_types', 'payment_methods'));
     }
 
     public function all()
@@ -231,9 +235,11 @@ class CustomerController extends Controller
         $customers = $this->customerService->search_customers($query);
         $areas = $this->areaService->all();
         $markets = $this->marketService->all();
+        $channels = $this->channelService->all();
+        $hubs = $this->hubService->all();
         $products = $this->productService->all();
 
-        return view('admin.customer.customer', compact('customers', 'areas', 'markets', 'products'));
+        return view('admin.customer.customer', compact('customers', 'areas', 'markets', 'channels', 'hubs', 'products'));
     }
 
     public function fetch_customer_labels()

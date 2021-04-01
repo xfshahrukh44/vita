@@ -9,6 +9,8 @@ use App\Models\StockOut;
 use App\Models\Order;
 use App\Models\Marketing;
 use App\Models\Receiving;
+use App\Models\Hub;
+use App\Models\Channel;
 use App\User;
 use App\Services\InvoiceService;
 use App\Services\InvoiceProductService;
@@ -23,6 +25,7 @@ use App\Exports\CustomerExport;
 use App\Exports\VendorExport;
 use App\Exports\ProductExport;
 use Carbon\Carbon;
+use DB;
 
 class HomeController extends Controller
 {
@@ -58,9 +61,12 @@ class HomeController extends Controller
 
     public function plug_n_play(Request $request)
     {
-        $users = User::withTrashed()->whereNotNull('deleted_at')->get();
-        foreach($users as $user){
-            $user->forceDelete();
+        $customers = DB::table('customer1')->get();
+        // dd($customers);
+        foreach($customers as $customer){
+            Customer::create([
+                'name' => $customer->Name
+            ]);
         }
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\StockOut;
 use App\Models\StockIn;
 use App\Models\Order;
+use App\Models\OrderProduct;
 
 class OrderProduct extends Model
 {
@@ -18,6 +19,8 @@ class OrderProduct extends Model
         'quantity',
         'price',
         'invoiced',
+        'foc',
+        'discount',
         'current_amount',
         'previous_amount',
         'final_amount',
@@ -39,10 +42,15 @@ class OrderProduct extends Model
 
         static::updating(function ($query) {
             $query->modified_by = auth()->user()->id;
+
+            $order_product = OrderProduct::find($query->id);
+            if($order_product){
+                set_status_by_invoiced_items($order_product->order_id);
+            }
         });
 
         static::deleting(function ($query) {
-            
+            set_status_by_invoiced_items($query->order_id);
         });
 
         static::created(function ($query) {

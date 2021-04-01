@@ -487,6 +487,43 @@
         $(form + ' .final_amount').val(parseInt($(form + ' .total').val()) + parseInt($(form + ' .previous_amount').val()));
         $(form + ' .balance_due').val(parseInt($(form + ' .final_amount').val()) - parseInt($(form + ' .amount_pay').val()));
     }
+    // count invoice total
+    function get_invoice_total(form = "#invoiceOrderModal"){
+        // var quantities = $(form + ' .quantities');
+        var prices = $(form + ' .prices');
+        // var discounts = $(form + ' .discounts');
+        var total = 0;
+        for(var i = 0; i < prices.length; i++){
+            var price = $(form + ' .prices')[i].value;
+            var quantity = $(form + ' .quantities')[i].value;
+            var discount = $(form + ' .discounts')[i].value;
+            var discount_value = 0;
+            if(discount == 0){
+                discount_value = (1 - 0) * price * quantity; //0%
+                $(form + ' .gross_amounts')[i].value = discount_value;
+            }
+            if(discount == 1){
+                discount_value = (1 - 0.1) * price * quantity; //10%
+                $(form + ' .gross_amounts')[i].value = discount_value;
+            }
+            if(discount == 2){
+                discount_value = (1 - 0.1) * price * quantity; //10%
+                discount_value = (1 - 0.06) * discount_value; //6%
+                $(form + ' .gross_amounts')[i].value = discount_value;
+            }
+            if(discount == 3){
+                discount_value = (1 - 0.1) * price * quantity; //10%
+                discount_value = (1 - 0.06) * discount_value; //6%
+                discount_value = (1 - 0.02) * discount_value; //2%
+                $(form + ' .gross_amounts')[i].value = discount_value;
+            }
+            total += discount_value;
+        }
+        $(form + ' .total').val(total);
+        // final_amount
+        $(form + ' .final_amount').val(parseInt($(form + ' .total').val()) + parseInt($(form + ' .previous_amount').val()));
+        $(form + ' .balance_due').val(parseInt($(form + ' .final_amount').val()) - parseInt($(form + ' .amount_pay').val()));
+    }
 
     // fetch_by_customer_and_product
     function fetch_by_customer_and_product(){
@@ -514,11 +551,29 @@
     $('#addOrderModal').on('change', '.quantities', function(){
         get_order_total('#addOrderModal');
     });
+    $('#addOrderModal').on('change', '.prices', function(){
+        get_order_total('#addOrderModal');
+    });
     $('#editOrderModal').on('change', '.quantities', function(){
         get_order_total('#editOrderModal');
     });
+    $('#editOrderModal').on('change', '.prices', function(){
+        get_order_total('#editOrderModal');
+    });
     $('#invoiceOrderModal').on('change', '.quantities', function(){
-        get_order_total('#invoiceOrderModal');
+        // get_order_total('#invoiceOrderModal');
+        get_invoice_total('#invoiceOrderModal');
+    });
+    $('#invoiceOrderModal').on('change', '.prices', function(){
+        // get_order_total('#invoiceOrderModal');
+        get_invoice_total('#invoiceOrderModal');
+    });
+    $('#invoiceOrderModal').on('change', '.discounts', function(){
+        // get_order_total('#invoiceOrderModal');
+        // var gross_amount_div = ($(this).parent().parent()).find('.gross_amounts');
+        // var price_div = ($(this).parent().parent()).find('.prices');
+        // gross_amount_div.val(price_div.val() - $(this).val());
+        get_invoice_total('#invoiceOrderModal');
     });
     // on customer change
     $('.customer_id').on('change', function(){
@@ -527,7 +582,8 @@
         $('.previous_amount').val(customer.outstanding_balance);
         get_order_total('#editOrderModal');
         get_order_total('#addOrderModal');
-        get_order_total('#invoiceOrderModal');
+        // get_order_total('#invoiceOrderModal');
+        get_invoice_total('#invoiceOrderModal');
     })
     // on payment change on invoice
     $('#invoiceOrderModal .payment').on('change', function(){
@@ -583,7 +639,8 @@
                         $(this).parent().parent().next().find('input').val(ui.item.consumer_selling_price);
                     }
                     if(customer.type == "retailer" || customer.type == "distributor"){
-                        $(this).parent().parent().next().find('input').val(ui.item.retailer_selling_price);
+                        $(this).parent().parent().next().find('input').val(ui.item.consumer_selling_price);
+                        // $(this).parent().parent().next().find('input').val(ui.item.retailer_selling_price);
                     }
                 }
 
@@ -656,6 +713,10 @@
     // invoice
     $('.invoiceButton').on('click', function(){
         fetch_order($(this).data('id'));
+
+        // replace order labels with invoice labels
+        var invoice_labels_div = '<div class="form-group col-md-3"><label>Product:</label> <br></div><div class="form-group col-md-2"><label for="">Selling Price:</label></div><div class="form-group col-md-1"><label for="">Quantity:</label></div><div class="form-group col-md-1"><label for="">FOC:</label></div><div class="form-group col-md-2"><label for="">Discount:</label></div><div class="form-group col-md-2"><label for="">Gross Price:</label></div><div class="form-group col-md-0 add_button ml-1" style="display: table; vertical-align: middle;"><a class="btn btn-primary"><i class="fas fa-plus" style="color:white;"></i></a></div>';
+        $('#invoiceOrderModal .labels').html(invoice_labels_div);
         
         // un hide fields
         $('#invoiceOrderModal .payment_wrapper').removeAttr('hidden');
@@ -697,11 +758,14 @@
 
         for(var i = 0; i < order.order_products.length; i++){
             if(order.order_products[i].invoiced == 0){
-                var productDiv = '<div class="col-md-4"><div class="ui-widget"><input name="order_products_ids[]" type="hidden" value="'+ order.order_products[i].id +'"><input class="form-control product_search" name="products[]" value="'+ order.order_products[i].product.category.name + ' - ' + order.order_products[i].product.brand.name + ' - ' + order.order_products[i].product.article +'"><input class="hidden_product_search" type="hidden" name="hidden_product_ids[]" value="'+ order.order_products[i].product.id +'"></div></div>';
-                var priceDiv = '<div class="form-group col-md-4"><input type="number" class="form-control prices" name="prices[]" required min=0 value="'+ order.order_products[i].price +'"></div>';
-                var quantityDiv = '<div class="form-group col-md-3"><input type="number" class="form-control quantities" name="quantities[]" required value="'+ order.order_products[i].quantity +'"></div>';
-                var fieldHTML = startDiv + productDiv + priceDiv + quantityDiv + removeChildDiv + endDiv;
-
+                var productDiv = '<div class="col-md-3"><div class="ui-widget"><input name="order_products_ids[]" type="hidden" value="'+ order.order_products[i].id +'"><input class="form-control product_search" name="products[]" value="'+ order.order_products[i].product.category.name + ' - ' + order.order_products[i].product.brand.name + ' - ' + order.order_products[i].product.article +'"><input class="hidden_product_search" type="hidden" name="hidden_product_ids[]" value="'+ order.order_products[i].product.id +'"></div></div>';
+                var priceDiv = '<div class="form-group col-md-2"><input type="number" class="form-control prices" name="prices[]" required min=0 value="'+ order.order_products[i].price +'"></div>';
+                var quantityDiv = '<div class="form-group col-md-1"><input type="number" class="form-control quantities" name="quantities[]" required min=0 value="'+ order.order_products[i].quantity +'"></div>';
+                var focDiv = '<div class="form-group col-md-1"><input type="number" class="form-control focs" name="focs[]" required value=0 min=0></div>';
+                // var discountDiv = '<div class="form-group col-md-2"><input type="number" class="form-control discounts" name="discounts[]" required value=0></div>';
+                var discountDiv = '<div class="form-group col-md-2"><select class="form-control discounts" name="discounts[]"><option value="0">No Discount</option>@foreach($discounts as $discount)<option value="{{$discount->id}}">{{'Level: ' . $discount->level . ' | ' . $discount->percentage . '%'}}</option>@endforeach</select></div>';
+                var grossDiv = '<div class="form-group col-md-2"><input type="number" class="form-control gross_amounts" name="gross_amounts[]" required min=0 step=".00001" value='+ order.order_products[i].price * order.order_products[i].quantity +'></div>';
+                var fieldHTML = startDiv + productDiv + priceDiv + quantityDiv + focDiv + discountDiv + grossDiv + removeChildDiv + endDiv;
                 $('.field_wrapper').prepend(fieldHTML);
                 x++;
             }
@@ -709,7 +773,8 @@
 
         initAutocompleteItems(".product_search", "#invoiceOrderModal .ui-widget", product_labels);
 
-        get_order_total('#invoiceOrderModal');
+        // get_order_total('#invoiceOrderModal');
+        get_invoice_total('#invoiceOrderModal');
 
         $('#invoiceOrderModal').modal('show');
     });
@@ -805,6 +870,15 @@
     $('#invoiceOrderModal').on("click", ".add_button", function(){
         //Check maximum number of input fields
         if(x < maxField){ 
+            var productDiv = '<div class="col-md-3"><div class="ui-widget"><input name="order_products_ids[]" type="hidden"><input class="form-control product_search" name="products[]" ><input class="hidden_product_search" type="hidden" name="hidden_product_ids[]"></div></div>';
+            var priceDiv = '<div class="form-group col-md-2"><input type="number" class="form-control prices" name="prices[]" required min=0></div>';
+            var quantityDiv = '<div class="form-group col-md-1"><input type="number" class="form-control quantities" name="quantities[]" required value="0" min=0></div>';
+            var focDiv = '<div class="form-group col-md-1"><input type="number" class="form-control focs" name="focs[]" required value=0 min=0></div>';
+            // var discountDiv = '<div class="form-group col-md-2"><input type="number" class="form-control discounts" name="discounts[]" required value=0></div>';
+            var discountDiv = '<div class="form-group col-md-2"><select class="form-control discounts" name="discounts[]"><option value="0">No Discount</option>@foreach($discounts as $discount)<option value="{{$discount->id}}">{{'Level: ' . $discount->level . ' | ' . $discount->percentage . '%'}}</option>@endforeach</select></div>';
+            var grossDiv = '<div class="form-group col-md-2"><input type="number" class="form-control gross_amounts" name="gross_amounts[]" required value=0 min=0 step=".0001"></div>';
+            var fieldHTML = startDiv + productDiv + priceDiv + quantityDiv + focDiv + discountDiv + grossDiv + removeChildDiv + endDiv;
+
             x++; //Increment field counter
             $(wrapper).prepend(fieldHTML); //Add field html
 
@@ -821,7 +895,8 @@
             x--; //Decrement field counter
             get_order_total('#editOrderModal');
             get_order_total('#addOrderModal');
-            get_order_total('#invoiceOrderModal');
+            // get_order_total('#invoiceOrderModal');
+            get_invoice_total('#invoiceOrderModal');
             // initAutocompleteItems(".product_search", "#editOrderModal .ui-widget", product_labels);
         }
     });

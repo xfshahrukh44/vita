@@ -1,9 +1,14 @@
 @csrf
 <div class="modal-body row">
+    <!-- article_code -->
+    <div class="form-group col-md-4">
+        <label for="">Article Code</label>
+        <input type="text" name="article_code" placeholder="Enter Articl Code" class="form-control article_code" required>
+    </div>
     <!-- article -->
     <div class="form-group col-md-4">
         <label for="">Name</label>
-        <input type="text" name="article" placeholder="Enter article" class="form-control article" required>
+        <input type="text" name="article" placeholder="Enter name" class="form-control article" required>
     </div>
     <!-- product_picture -->
     <div class="form-group col-md-4">
@@ -12,7 +17,7 @@
         class="form-control">
     </div>
     <!-- gender -->
-    <div class="form-group col-md-4">
+    <!-- <div class="form-group col-md-3">
         <label for=""><i class="nav-icon fas fa-copyright"></i> Gender</label>
         <select name="gender" class="form-control gender" style="width: 100%; height: 35px;">
             <option value="">Select product gender</option>
@@ -20,29 +25,15 @@
             <option value="female">Female</option>
             <option value="both">Both</option>
         </select>
-    </div>
+    </div> -->
 
-    <!-- category_id -->
-    <div class="form-group col-md-4">
-        <label for=""><i class="nav-icon fas fa-copyright"></i> Category</label>
-        <!-- Add new -->
-        <a href="#" class="add_category float-right mt-2">
-            <i class="nav-icon fa fa-plus green"></i>
-        </a>
-        <select name="category_id" class="form-control category_id" style="width: 100%; height: 35px;">
-            <option value="">Select category</option>
-            @foreach($categories as $category)
-                <option value="{{$category->id}}">{{$category->name}}</option>
-            @endforeach
-        </select>
-    </div>
     <!-- brand_id -->
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <label for=""><i class="nav-icon fab fa-bootstrap"></i> Brand</label>
         <!-- Add new -->
-        <a href="#" class="add_brand float-right mt-2">
+        <!-- <a href="#" class="add_brand float-right mt-2">
             <i class="nav-icon fa fa-plus green"></i>
-        </a>
+        </a> -->
         <select name="brand_id" class="form-control brand_id" style="width: 100%; height: 35px;">
             <option value="">Select brand</option>
             @foreach($brands as $brand)
@@ -51,12 +42,12 @@
         </select>
     </div>
     <!-- unit_id -->
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <label for=""><i class="nav-icon fas fa-balance-scale-left"></i> Unit</label>
         <!-- Add new -->
-        <a href="#" class="add_unit float-right mt-2">
+        <!-- <a href="#" class="add_unit float-right mt-2">
             <i class="nav-icon fa fa-plus green"></i>
-        </a>
+        </a> -->
         <select name="unit_id" class="form-control unit_id" style="width: 100%; height: 35px;">
             <option value="">Select unit</option>
             @foreach($units as $unit)
@@ -64,7 +55,47 @@
             @endforeach
         </select>
     </div>
+    <!-- category_id -->
+    <div class="form-group col-md-3">
+        <label for=""><i class="nav-icon fas fa-copyright"></i> Category</label>
+        <!-- Add new -->
+        <!-- <a href="#" class="add_category float-right mt-2">
+            <i class="nav-icon fa fa-plus green"></i>
+        </a> -->
+        <select name="category_id" class="form-control category_id" style="width: 100%; height: 35px;">
+            <option value="">Select category</option>
+            @foreach($categories as $category)
+                <option value="{{$category->id}}">{{$category->name}}</option>
+            @endforeach
+        </select>
+    </div>
 
+    <!-- sub_category_id -->
+    <div class="form-group col-md-3">
+        <label for=""><i class="nav-icon fas fa-copyright"></i> Sub Category</label>
+        <select name="sub_category_id" class="form-control sub_category_id" style="width: 100%; height: 35px;">
+            <option value="">Select Sub Category</option>
+            @foreach($categories as $category)
+                <option value="{{$category->id}}">{{$category->name}}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- case_count -->
+    <div class="form-group col-md-4">
+        <label for="">Case Count</label>
+        <input type="number" min=0 name="case_count" placeholder="Enter Case Count" class="form-control case_count" required value=0>
+    </div>
+    <!-- net_weight_pc -->
+    <div class="form-group col-md-4">
+        <label for="">Net Weight PC</label>
+        <input type="number" min=0 name="net_weight_pc" placeholder="Enter Net Weight PC" class="form-control net_weight_pc" required value=0 step=".1">
+    </div>
+    <!-- case_weight -->
+    <div class="form-group col-md-4">
+        <label for="">Case Weight</label>
+        <input type="number" min=0 name="case_weight" placeholder="Enter Case Weight" class="form-control case_weight" required value=0 step=".01">
+    </div>
     <!-- purchase_price -->
     <div class="form-group col-md-4">
         <label for="">Purchase Price</label>
@@ -100,5 +131,10 @@
     <div class="form-group col-md-6">
         <label for="">Minimum Ordering Quantity</label>
         <input type="number" min=0 name="moq" placeholder="Enter Minimum Ordering Quantity" class="form-control moq" required value=0>
+    </div>
+    <!-- description -->
+    <div class="form-group col-md-12">
+        <label for="">Description</label>
+        <textarea type="text" name="description" placeholder="Enter Description" class="form-control description"></textarea>
     </div>
 </div>

@@ -52,6 +52,7 @@ class InvoiceController extends Controller
     
     public function store(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
             'order_id' => 'sometimes',
@@ -68,6 +69,13 @@ class InvoiceController extends Controller
         // set previous balance
         $customer = ($this->customerService->find($request->customer_id))['customer'];
         $request['previous_balance'] = $customer->outstanding_balance;
+
+        // set total_pieces
+        $total_pieces = 0;
+        for($i = 0; $i < count($request['quantities']); $i++){
+            $total_pieces += $request['quantities'][$i] + $request['focs'][$i];
+        }
+        $request['total_pieces'] = $total_pieces;
 
         // create invoice
         $invoice = ($this->invoiceService->create($request->all()))['invoice']['invoice'];

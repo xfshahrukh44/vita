@@ -51,18 +51,22 @@
           <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
             <thead>
               <tr role="row">
-                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Article</th>
-                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Category</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Name</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Article Code</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Brand</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Description</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Case Count</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Unit</th>
-                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Gender</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Net Weight PC</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Case Weight</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Category</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Sub Category</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Purchase Price</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Consumer Selling Price</th>
-                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Retailer Selling Price</th>
+                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Recommended Selling Price</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Quantity in Hand</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Cost Value</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Sales Value</th>
-                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">M.O.Q</th>
                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1">Actions</th>
               </tr>
             </thead>
@@ -71,19 +75,15 @@
                 @foreach($products as $product)
                   <tr role="row" class="odd">
                     <td class="{{'article'.$product->id}}">{{$product->article}}</td>
-                    <td class="{{'category_id'.$product->id}}">{{$product->category ? $product->category->name : NULL}}</td>
+                    <td class="{{'article_code'.$product->id}}">{{$product->article_code}}</td>
                     <td class="{{'brand_id'.$product->id}}">{{$product->brand ? $product->brand->name : NULL}}</td>
+                    <td class="{{'description'.$product->id}}">{{$product->description}}</td>
+                    <td class="{{'case_count'.$product->id}}">{{$product->case_count}}</td>
                     <td class="{{'unit_id'.$product->id}}">{{$product->unit ? $product->unit->name : NULL}}</td>
-                    <!-- gender -->
-                    <td class="{{'gender'.$product->id}}">
-                      @if($product->gender == 'male')
-                        <i class="fas fa-mars blue"></i>
-                      @elseif($product->gender == 'female')
-                        <i class="fas fa-venus pink"></i>
-                      @else
-                      @endif
-                      {{$product->gender ? $product->gender : NULL}}
-                    </td>
+                    <td class="{{'net_weight_pc'.$product->id}}">{{$product->net_weight_pc}}</td>
+                    <td class="{{'case_weight'.$product->id}}">{{$product->case_weight}}</td>
+                    <td class="{{'category_id'.$product->id}}">{{$product->category ? $product->category->name : NULL}}</td>
+                    <td class="{{'category_id'.$product->id}}">{{$product->sub_category ? $product->sub_category->name : ''}}</td>
                     <td class="{{'purchase_price'.$product->id}}">{{'Rs. ' .number_format($product->purchase_price, 2)}}</td>
                     <td class="{{'consumer_selling_price'.$product->id}}">{{'Rs. ' .number_format($product->consumer_selling_price)}}</td>
                     <td class="{{'retailer_selling_price'.$product->id}}">{{'Rs. ' .number_format($product->retailer_selling_price)}}</td>
@@ -96,7 +96,6 @@
                     </td>
                     <td class="{{'cost_value'.$product->id}}">{{'Rs. ' .number_format($product->cost_value)}}</td>
                     <td class="{{'sales_value'.$product->id}}">{{'Rs. ' .number_format($product->sales_value)}}</td>
-                    <td class="{{'moq'.$product->id}}">{{$product->moq}}</td>
                     <td>
                       <!-- Detail -->
                       <a href="#" class="detailButton" data-id="{{$product->id}}" data-object="{{$product}}" data-product="{{asset('img/products') . '/' . $product->product_picture}}">
@@ -400,6 +399,35 @@ $(document).ready(function(){
   var element = $('li a[href*="'+ window.location.pathname +'"]');
   element.parent().parent().parent().addClass('menu-open');
   element.addClass('active');
+
+  // global vars
+  var category = "";
+
+  // fetch category
+  function fetch_category(id){
+      // fetch category
+      $.ajax({
+          url: "<?php echo(route('category.show', 1)); ?>",
+          type: 'GET',
+          async: false,
+          data: {id: id},
+          dataType: 'JSON',
+          success: function (data) {
+              category = data.category;
+          }
+      });
+  }
+
+  // on category_id change
+  $('.category_id').on('change', function(){
+    fetch_category($(this).val());
+    $('.sub_category_id').html('<option value="">Select Sub Category</option>');
+    if(category.children.length > 0){
+      for(var i = 0; i < category.children.length; i++){
+        $('.sub_category_id').append('<option value="'+ category.children[i].id +'">'+ category.children[i].name +'</option>');
+      }
+    }
+  });
 
   // create
   $('#add_product').on('click', function(){

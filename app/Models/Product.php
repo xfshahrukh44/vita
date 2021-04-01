@@ -28,6 +28,12 @@ class Product extends Model
         'product_picture',
         'cost_value',
         'sales_value',
+        'sub_category_id',
+        'article_code',
+        'description',
+        'case_count',
+        'net_weight_pc',
+        'case_weight',
         'created_by',
         'modified_by'
     ];
@@ -81,21 +87,33 @@ class Product extends Model
             // $product->save();
 
             // pusher
-            if($query->quantity_in_hand < $query->moq){
-                $category = $query->category->name;
-                $brand = $query->brand->name;
-                $article = $query->article;
-                $message = $category.'-'.$brand.'-'.$article.' is low on stock.';
-                event(new ThresholdReached($message));
-            }
+            // if($query->quantity_in_hand < $query->moq){
+            //     $category = $query->category->name;
+            //     $brand = $query->brand->name;
+            //     $article = $query->article;
+            //     $message = $category.'-'.$brand.'-'.$article.' is low on stock.';
+            //     event(new ThresholdReached($message));
+            // }
         });
     }
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
+    public function saveQuietly(array $options = [])
+    {
+        return static::withoutEvents(function () use ($options) {
+            return $this->save($options);
+        });
+    }
+
     public function category()
     {
         return $this->belongsTo('App\Models\Category');
+    }
+
+    public function sub_category()
+    {
+        return $this->belongsTo('App\Models\Category', 'sub_category_id', 'id');
     }
 
     public function brand()

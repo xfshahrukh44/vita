@@ -28,9 +28,9 @@
             <div class="card-header">
                 <div class="card-tools">
                     <!-- <h3 class="">Invoices</h3> -->
-                    <button class="btn btn-success testbtn" id="add_program" data-route="{{route('invoice.store')}}"">
+                    <!-- <button class="btn btn-success testbtn" id="add_program" data-route="{{route('invoice.store')}}"">
                         <i class="fas fa-plus"></i> Add New Invoice
-                    </button>
+                    </button> -->
                 </div>
                 <!-- search bar -->
                 <form action="{{route('search_invoices')}}" class="form-wrapper">

@@ -9,6 +9,7 @@ use App\Services\CustomerService;
 use App\Services\ProductService;
 use App\Services\OrderProductService;
 use App\Services\UserService;
+use App\Services\DiscountService;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -19,14 +20,16 @@ class OrderController extends Controller
     private $productService;
     private $orderProductService;
     private $userService;
+    private $discountService;
 
-    public function __construct(OrderService $orderService, CustomerService $customerService, ProductService $productService, OrderProductService $orderProductService, UserService $userService)
+    public function __construct(OrderService $orderService, CustomerService $customerService, ProductService $productService, OrderProductService $orderProductService, UserService $userService, DiscountService $discountService)
     {
         $this->orderService = $orderService;
         $this->customerService = $customerService;
         $this->productService = $productService;
         $this->orderProductService = $orderProductService;
         $this->userService = $userService;
+        $this->discountService = $discountService;
         $this->middleware('auth');
     }
     
@@ -36,7 +39,8 @@ class OrderController extends Controller
         $customers = $this->customerService->all();
         $products = $this->productService->all();
         $riders = $this->userService->all_riders();
-        return view('admin.order.order', compact('orders', 'customers', 'products', 'riders'));
+        $discounts = $this->discountService->all();
+        return view('admin.order.order', compact('orders', 'customers', 'products', 'riders', 'discounts'));
     }
 
     public function all()

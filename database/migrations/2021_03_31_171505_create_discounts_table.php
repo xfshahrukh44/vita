@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHubsTable extends Migration
+class CreateDiscountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateHubsTable extends Migration
      */
     public function up()
     {
-        Schema::create('hubs', function (Blueprint $table) {
+        Schema::create('discounts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->nullable();
+            $table->integer('level')->nullable();
+            $table->decimal('percentage', 20,2)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('modified_by')->nullable();
             $table->timestamps();
@@ -30,6 +31,6 @@ class CreateHubsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hubs');
+        Schema::dropIfExists('discounts');
     }
 }

@@ -10,7 +10,7 @@ class Category extends Model
     use SoftDeletes;
     
     protected $fillable = [
-        'name', 'created_by', 'modified_by'
+        'name', 'parent_id', 'created_by', 'modified_by'
     ];
 
     protected static function boot()
@@ -32,4 +32,15 @@ class Category extends Model
     {
         return $this->hasMany('App\Models\Product');
     }
+
+    public function parent()
+    {
+        return $this->belongsTo('App\Models\Category', 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\Models\Category', 'parent_id');
+    }
+
 }

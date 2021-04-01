@@ -188,7 +188,7 @@ class ProductController extends Controller
         $new_products = [];
         foreach($products as $product){
             array_push($new_products, [
-                'label' => $product->category->name . ' - ' . $product->brand->name . ' - ' . $product->article,
+                'label' => $product->article_code . ' | ' . $product->category->name . ' - ' . $product->brand->name . ' - ' . $product->article,
                 'value' => $product->id,
                 'consumer_selling_price' => $product->consumer_selling_price ? $product->consumer_selling_price : 0,
                 'retailer_selling_price' => $product->retailer_selling_price ? $product->retailer_selling_price : 0,

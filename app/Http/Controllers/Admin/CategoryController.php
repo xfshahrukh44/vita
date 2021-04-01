@@ -40,6 +40,9 @@ class CategoryController extends Controller
     
     public function show(Request $request, $id)
     {
+        if(array_key_exists('id', $_REQUEST)){
+            return $this->categoryService->find($_REQUEST['id']);
+        }
         $id = $request->id;
         return $this->categoryService->find($id);
     }

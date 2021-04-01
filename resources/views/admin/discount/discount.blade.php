@@ -3,7 +3,7 @@
 @section('content_header')
 <div class="row mb-2">
   <div class="col-sm-6">
-    <h1 class="m-0 text-dark"><i class="nav-icon fas fa-copyright"></i> Categories</h1>
+    <h1 class="m-0 text-dark"><i class="nav-icon fab fa-bootstrap"></i> Discounts</h1>
 </div>
 </div>
 
@@ -17,8 +17,8 @@
         <div class="card">
             <div class="card-header">
                 <div class="card-tools">
-                    <button class="btn btn-success" id="add_program" data-toggle="modal" data-target="#addCategoryModal">
-                        <i class="fas fa-plus"></i> Add New Category
+                    <button class="btn btn-success" id="add_program" data-toggle="modal" data-target="#addDiscountModal">
+                        <i class="fas fa-plus"></i> Add New Discount
                     </button>
                 </div>
             </div>
@@ -28,32 +28,26 @@
                     <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
                         <thead>
                             <tr role="row">
-                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending">Name</th>
-                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending">Parent Category</th>
-                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending">Children</th>
+                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Level: activate to sort column ascending">Level</th>
+                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Percentage: activate to sort column ascending">Percentage</th>
                                 <th tabindex="0" rowspan="1" colspan="1" >Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @if(count($categories) > 0)
-                            @foreach($categories as $category)
+                            @if(count($discounts) > 0)
+                            @foreach($discounts as $discount)
                             <tr role="row" class="odd">
-                                <td class="{{'name'.$category->id}}">{{$category->name}}</td>
-                                <td class="{{'parent_id'.$category->id}}">{{($category->parent) ? ($category->parent->name) : ''}}</td>
-                                <td class="">
-                                    @foreach($category->children as $child)
-                                        {{$child->name . ((!$loop->last) ? (',') : '.')}}
-                                    @endforeach
-                                </td>
+                                <td class="{{'level'.$discount->id}}">{{$discount->level}}</td>
+                                <td class="{{'percentage'.$discount->id}}">{{($discount->percentage) ? ($discount->percentage . '%') : ''}}</td>
                                 <td>
                                     @can('isSuperAdmin')
                                         <!-- Edit -->
-                                        <a href="#" class="editButton" data-id="{{$category->id}}">
+                                        <a href="#" class="editButton" data-id="{{$discount->id}}">
                                             <i class="fas fa-edit blue ml-1"></i>
                                         </a>
                                         <!-- Delete -->
-                                        <a href="#" class="deleteButton" data-id="{{$category->id}}">
+                                        <a href="#" class="deleteButton" data-id="{{$discount->id}}">
                                             <i class="fas fa-trash red ml-1"></i>
                                         </a>
                                     @endcan
@@ -62,7 +56,7 @@
                             @endforeach
                             @else
                             <tr>
-                                <td colspan="4"><h6 align="center">No category(s) found</h6></td>
+                                <td colspan="4"><h6 align="center">No discount(s) found</h6></td>
                             </tr>
                             @endif
                         </tbody>
@@ -73,8 +67,8 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-             @if(count($categories) > 0)
-             {{$categories->links()}}
+             @if(count($discounts) > 0)
+             {{$discounts->links()}}
              @endif
          </div>
      </div>
@@ -82,17 +76,17 @@
 </div>
 
 <!-- Create view -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="addDiscountModal" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+            <h5 class="modal-title" id="addDiscountModalLabel">Add New Discount</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <form method="POST" action="{{route('category.store')}}">
-            @include('admin.category.category_master')
+        <form method="POST" action="{{route('discount.store')}}">
+            @include('admin.discount.discount_master')
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" id="createButton">Create</button>
             </div>
@@ -102,20 +96,20 @@
 </div>
 
 <!-- Edit view -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="editDiscountModal" tabindex="-1" role="dialog" aria-labelledby="editDiscountModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+            <h5 class="modal-title" id="editDiscountModalLabel">Edit Discount</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <form id="editForm" method="POST" action="{{route('category.update', 1)}}">
+        <form id="editForm" method="POST" action="{{route('discount.update', 1)}}">
             <!-- hidden input -->
             @method('PUT')
             <input id="hidden" type="hidden" name="hidden">
-            @include('admin.category.category_master')
+            @include('admin.discount.discount_master')
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" id="createButton">Update</button>
             </div>
@@ -125,16 +119,16 @@
 </div>
 
 <!-- Delete view -->
-<div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteDiscountModal" tabindex="-1" role="dialog" aria-labelledby="deleteDiscountModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
+            <h5 class="modal-title" id="deleteDiscountModalLabel">Delete Discount</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <form id="deleteForm" method="POST" action="{{route('category.destroy', 1)}}">
+        <form id="deleteForm" method="POST" action="{{route('discount.destroy', 1)}}">
             <!-- hidden input -->
             @method('DELETE')
             @csrf
@@ -167,24 +161,24 @@
         // edit
         $('.editButton').on('click', function(){
             var id = $(this).data('id');
-            $('#editForm').attr('action', "{{route('category.update', 1)}}");
+            $('#editForm').attr('action', "{{route('discount.update', 1)}}");
             $('#hidden').val(id);
             
             $('#editForm #name').val($('.name' + id).html());
             $('#editForm #placeholder').val($('.placeholder' + id).html());
             $('#editForm #slug').val($('.slug' + id).html());
 
-            $('#editCategoryModal').modal('show');
+            $('#editDiscountModal').modal('show');
         });
 
         // delete
         $('.deleteButton').on('click', function(){
             var id = $(this).data('id');
-            $('#deleteForm').attr('action', "{{route('category.update', 1)}}");
+            $('#deleteForm').attr('action', "{{route('discount.update', 1)}}");
             $('#deleteForm .hidden').val(id);
             
-            $('#deleteCategoryModalLabel').text('Delete Category: ' + $('.name' + id).html() + "?");
-            $('#deleteCategoryModal').modal('show');
+            $('#deleteDiscountModalLabel').text('Delete Discount: ' + $('.name' + id).html() + "?");
+            $('#deleteDiscountModal').modal('show');
         });
     });
 </script>

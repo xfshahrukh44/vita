@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddChannelIdToVendors extends Migration
+class CustomersMultiple extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddChannelIdToVendors extends Migration
      */
     public function up()
     {
-        Schema::table('vendors', function (Blueprint $table) {
-            $table->integer('channel_id')->nullable();
-            $table->integer('hub_id')->nullable();
+        Schema::table('customers', function (Blueprint $table) {
+            $table->integer('customer_type_id')->nullable();
+            $table->integer('payment_method_id')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddChannelIdToVendors extends Migration
      */
     public function down()
     {
-        Schema::table('vendors', function (Blueprint $table) {
+        Schema::table('customers', function (Blueprint $table) {
             //
         });
     }

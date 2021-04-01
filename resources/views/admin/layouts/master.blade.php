@@ -161,6 +161,12 @@
                   <p>Products</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{route('discount.index')}}" class="nav-link">
+                  <i class="nav-icon fas fa-percentage"></i>
+                  <p>Discounts</p>
+                </a>
+              </li>
               @can('isSuperAdmin')
                 <li class="nav-item">
                   <a href="{{route('stock_in.index')}}" class="nav-link">

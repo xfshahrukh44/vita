@@ -385,17 +385,17 @@ $(document).ready(function(){
   $('.editButton').on('click', function(){
     var id = $(this).data('id');
     fetch_customer(id);
-    console.log(customer);
+    // console.log(customer);
     $('#hidden').val(id);
     
-    $('#editForm .name').val($('.name' + id).html());
-    $('#editForm .contact_number').val($('.contact_number' + id).html());
-    $('#editForm .whatsapp_number').val(customer.whatsapp_number);
-    $('#editForm .type').val(customer.type);
+    $('#editForm .name').val(customer.name ? customer.name : '');
+    $('#editForm .contact_number').val(customer.contact_number ? customer.contact_number : '');
+    $('#editForm .whatsapp_number').val(customer.whatsapp_number ? customer.whatsapp_number : '');
+    $('#editForm .type').val(customer.type ? customer.type : '');
 
-    $('#editForm .shop_name').val(customer.shop_name);
-    $('#editForm .shop_number').val(customer.shop_number);
-    $('#editForm .floor').val(customer.floor);
+    $('#editForm .shop_name').val(customer.shop_name ? customer.shop_name : '');
+    $('#editForm .shop_number').val(customer.shop_number ? ustomer.shop_number : '');
+    $('#editForm .floor').val(customer.floor ? customer.floor : '');
 
     if(customer.area){
       $('#editForm .area_id option[value="'+ customer.area.id +'"]').prop('selected', true);
@@ -416,12 +416,12 @@ $(document).ready(function(){
     $('#editForm .visiting_days option[value="'+ customer.visiting_days +'"]').prop('selected', true);
     $('#editForm .cash_on_delivery option[value="'+ customer.cash_on_delivery +'"]').prop('selected', true);
 
-    $('#editForm .opening_balance').val(customer.opening_balance);
-    $('#editForm .business_to_date').val(customer.business_to_date);
-    $('#editForm .outstanding_balance').val(customer.outstanding_balance);
-    $('#editForm .special_discount').val(customer.special_discount);
+    $('#editForm .opening_balance').val(customer.opening_balance ? customer.opening_balance : '');
+    $('#editForm .business_to_date').val(customer.business_to_date ? customer.business_to_date : '');
+    $('#editForm .outstanding_balance').val(customer.outstanding_balance ? customer.outstanding_balance : '');
+    $('#editForm .special_discount').val(customer.special_discount ? customer.special_discount : '');
 
-    $('#editForm .payment_terms').val(customer.payment_terms);
+    $('#editForm .payment_terms').val(customer.payment_terms ? customer.payment_terms : '');
 
     // children work
     if(customer.special_discounts.length > 0){
@@ -443,37 +443,37 @@ $(document).ready(function(){
   // detail
   $('.detailButton').on('click', function(){
     $('.bci').trigger('click');
+    var id = $(this).data('id');
+    fetch_customer(id);
 
-    var customer = $(this).data('object');
-    
-    $('.name').html(customer.name);
-    $('.contact_number').html(customer.contact_number);
-    $('.whatsapp_number').html(customer.whatsapp_number);
+    $('.name').html(customer.name ? customer.name : '');
+    $('.contact_number').html(customer.contact_number ? customer.contact_number : '');
+    $('.whatsapp_number').html(customer.whatsapp_number ? customer.whatsapp_number : '');
     if(customer.shop_keeper_picture){
       var shop_path = $(this).data('shopkeeper');
       $('.shop_keeper_picture').attr('src', shop_path);
     }
-    $('.type').html(customer.type);
+    $('.type').html(customer.type ? customer.type : '');
 
-    $('.shop_name').html(customer.shop_name);
-    $('.shop_number').html(customer.shop_number);
-    $('.floor').html(customer.floor);
-    $('.area').html(customer.area.name);
-    $('.channel').html(customer.channel.name);
-    $('.hub').html(customer.hub.name);
+    $('.shop_name').html(customer.shop_name ? customer.shop_name : '');
+    $('.shop_number').html(customer.shop_number ? customer.shop_number : '');
+    $('.floor').html(customer.floor ? customer.floor : '');
+    $('.area').html(customer.area ? customer.area.name : '');
+    $('.channel').html(customer.channel ? customer.channel.name : '');
+    $('.hub').html(customer.hub ? customer.hub.name : '');
 
     if(customer.shop_picture){
       var shop_path = $(this).data('shop');
       $('.shop_picture').attr('src', shop_path);
     }
 
-    $('.status').html(customer.status);
-    $('.visiting_days').html(customer.visiting_days);
-    $('.cash_on_delivery').html(customer.cash_on_delivery);
+    $('.status').html(customer.status ? customer.status : '');
+    $('.visiting_days').html(customer.visiting_days ? customer.visiting_days : '');
+    $('.cash_on_delivery').html(customer.cash_on_delivery ? customer.cash_on_delivery : '');
     $('.opening_balance').html("Rs. " + (customer.opening_balance ? (customer.opening_balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) : ''));
     $('.business_to_date').html("Rs. " + (customer.business_to_date ? (customer.business_to_date.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) : ''));
     $('.outstanding_balance').html("Rs. " + (customer.outstanding_balance ? (customer.outstanding_balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) : ''));
-    $('.special_discount').html("Rs. " + customer.special_discount);
+    $('.special_discount').html(customer.special_discount ? ("Rs. " + customer.special_discount) : '');
 
     $('#viewCustomerModal').modal('show');
   });

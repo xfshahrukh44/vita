@@ -59,7 +59,7 @@ class StockOut extends Model
             $product->cost_value = $product->quantity_in_hand * $product->purchase_price;
             $product->sales_value = $product->quantity_in_hand * $product->consumer_selling_price;
 
-            $product->save();
+            $product->saveQuietly();
 
             // adjustment expense entry
             if($new_expense_type != NULL){
@@ -84,7 +84,7 @@ class StockOut extends Model
             $product->cost_value = $product->quantity_in_hand * $product->purchase_price;
             $product->sales_value = $product->quantity_in_hand * $product->consumer_selling_price;
             
-            $product->save();
+            $product->saveQuietly();
 
             // adjustment expense entry
             if($query->expense_type != NULL){
@@ -106,7 +106,7 @@ class StockOut extends Model
             $product->cost_value = $product->quantity_in_hand * $product->purchase_price;
             $product->sales_value = $product->quantity_in_hand * $product->consumer_selling_price;
             
-            $product->save();
+            $product->saveQuietly();
 
             // fetch customer if id given
             if($query->customer_id != NULL){
