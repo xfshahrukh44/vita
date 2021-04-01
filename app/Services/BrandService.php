@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Repositories\CustomerTypeRepository;
+use App\Repositories\BrandRepository;
 use Illuminate\Support\Facades\DB;
-use App\Models\CustomerType;
+use App\Models\Brand;
 
 
-class CustomerTypeService extends CustomerTypeRepository
+class BrandService extends BrandRepository
 {
     
 }
